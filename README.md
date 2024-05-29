@@ -1,4 +1,9 @@
 # MMC4W - Minimal MPD Client for Windows 
+forked from drgreg - They seem to prefer to leave this software without sanity checks.
+But minimal does not have to mean minimal code.
+This fork is to improve this software's resilience regaddless of what the MPD plays, contains, and it's status.
+
+-----
 
 You really should start here.  It's the [Help text](https://github.com/drgerg/mmc4w/blob/main/code/_internal/mmc4w_help.md).
 
