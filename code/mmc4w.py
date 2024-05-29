@@ -4,6 +4,9 @@
 # Minimal MPD Client for Windows - basic set of controls for an MPD server.
 # Take up as little space as possible to get the job done.
 # mmc4w.py uses the python-musicpd library.
+# 
+# forked to repurpose this MPD client.
+# I need it to focus on the music, even when the content MPD is playing does not contain metadata
 ##
 
 import tkinter as tk
@@ -32,7 +35,7 @@ else:
     ctypes.windll.shcore.SetProcessDpiAwareness(0)
     ctypes.windll.user32.SetProcessDPIAware()
 
-version = "v2.1.0"
+version = "v2.1.0-chc"
 # v2.1.0 - Gently handle attempting to run with no server. Add 'delete debug log'.
 # v2.0.9 - Finally get scale factors working. Renamed menus. Browse help.html.
 # v2.0.8 - Use buttons in search windows for added flexibility.
@@ -502,6 +505,9 @@ def pause():  # Pause is complicated because of time-keeping.
     global buttonvar,pstate,dur,elap
     logger.debug('Buttonvar state at button press: {}.'.format(buttonvar))
     cstat = getcurrstat()
+    if 'duration' not in cstat or 'elapsed' not in cstat: 
+        client.pause()
+        return
     if buttonvar == 'pause':        ## SYSTEM WAS PAUSED
         if cstat["state"] == 'pause':
             dur = cstat['duration']
@@ -546,6 +552,7 @@ def voldn():
 
 def pausethreadtimer(cstat):
     global buttonvar
+    if 'duration' not in cstat or 'elapsed' not in cstat: return
     songdur = float(cstat['duration'])
     songelap = float(cstat['elapsed'])
     leftover = int(songdur - songelap)
@@ -763,6 +770,7 @@ def getcurrsong():
     logger.debug('D2| Retrieving "cs" in getcurrsong().')
     cs = client.currentsong()
     logger.debug('D2| Got cs (client.currentsong()) with a length of {}.'.format(len(cs)))
+    
     if cs == {}:
         client.stop()
         buttonvar = 'stop'
@@ -774,8 +782,9 @@ def getcurrsong():
         plrandom()
     else:
         msg,gendtime = getendtime(cs,stat)
-        if cs['album'] != lastpl:
-            lastpl = confparse.get('serverstats','lastsetpl')
+        if 'album' in cs:
+            if cs['album'] != lastpl:
+                lastpl = confparse.get('serverstats','lastsetpl')
         logger.debug('D2| Headed to getaartpic(**cs).')
         getaartpic(**cs)
         aart = artWindow(aartvar)
@@ -801,9 +810,11 @@ def getcurrsong():
                 logger.info("4) This title is still playing or just finished. Modifying endtime based on dur-elap.")
                 gendtime = time.time() + (float(dur)-float(elap))
                 gsent = 0
-                logger.info("5) gendtime returned to {}. Remaining is {}.".format(gendtime,(float(cs['duration'])-float(elap))))
-                if float(cs['duration']) == 0.00:
-                    next()
+                if 'duration' not in cs:
+                    cs['duration'] = 0.00
+                    logger.info("5) gendtime returned to {}. Remaining is {}.".format(gendtime,(float(cs['duration'])-float(elap))))
+                #if float(cs['duration']) == 0.00: // disabled for now, mpd should progress to the next track, not this client. "minimaly invasive"
+                #    next()
         else:
             logger.info("4) This is the last song you played during your last session.")
         logger.debug('D7| lastvol: {}, gendtime: {}, gpstate: {}, gsent {}.'.format(lastvol,gendtime,gpstate,gsent))
@@ -829,16 +840,24 @@ def getcurrsong():
 #
 #
 def getendtime(cs,stat):
+    
     global dur,elap
     msg = ""
-    dur = cs['duration']
-    trk = cs['track'].zfill(2)
+    if 'duration' in cs: dur = cs['duration']
+    else: dur = '0.0';
+    if 'track' in cs: trk = cs['track'].zfill(2)
+    else: trk="-1"
     if 'elapsed' in stat:
         elap = stat['elapsed']
     remaining = float(dur) - float(elap)
     gendtime = time.time() + remaining
     logger.info('1) endtime generated: {}. Length: {}, Song dur: {}, Elapsed: {}.'.format(gendtime,int(gendtime - time.time()),dur,elap))
-    msg = str(trk + '-' + cs["title"] + " - " + cs["artist"])
+    if 'title' in cs: titl=cs["title"]
+    else: titl="n/a"
+    if 'artist' in cs: artst=cs["artist"]
+    else: artst="n/a"
+
+    msg = str(trk + '-' + titl + " - " + artst)
     return msg,gendtime
 #
 #
@@ -846,7 +865,7 @@ def getaartpic(**cs):
     global aatgl,aartvar
     eadict = {}
     fadict = {}
-    eadict = client.readpicture(cs['file'],0)
+    eadict = {}#client.readpicture(cs['file'],1) //chc - disabled for now, blocking call
     if len(eadict) > 0:
         size = int(eadict['size'])
         done = int(eadict['binary'])
@@ -860,7 +879,8 @@ def getaartpic(**cs):
         aartvar = 1
     elif len(eadict) == 0:
         try:
-            fadict = client.albumart(cs['file'],0)
+            #fadict = client.albumart(cs['file'],0)
+            fadict = {}
             if len(fadict) > 0:
                 received = int(fadict.get('binary'))
                 size = int(fadict.get('size'))
@@ -879,6 +899,7 @@ def getaartpic(**cs):
             pass
     else:
         aartvar = 0
+    
     if aatgl == '1':
         logger.info('2) Bottom of getaartpic(). Headed to artWindow(). aartvar is {}, len(eadict) is {}, len(fadict) is {}.'.format(aartvar,len(eadict),len(fadict)))
 
@@ -1225,6 +1246,7 @@ confparse.set('display','displaysize',str(window.winfo_screenwidth()) + ',' + st
 with open(mmc4wIni, 'w') as SLcnf:
     confparse.write(SLcnf)
 window.update()
+
 #
 ##
 #
@@ -1850,6 +1872,7 @@ button_exit.grid(column=4, sticky='W', row=1, padx=1)                     # Plac
 # Make all threads daemon threads, and whenever the main thread dies all threads will die with it.
 ## tk.END THREADING NOTES =====================================
 #
+
 cxstat = connext()
 if cxstat == 0:
     SrvrWindow('server')
@@ -1865,6 +1888,7 @@ songused = 0
 ###
 # lastpl is "Last Playlist". dur is "Song Duration".
 ###
+
 def threesecdisplaytext():
     global evenodd, globsongtitle,buttonvar,lastpl,endtime,dur,ran,rpt,sin,con,elap
     def eo1():
@@ -1919,11 +1943,13 @@ if aatgl == '1':
         artw.overrideredirect(True)
     elif firstrun == '0' and tbarini == '1':
         artw.overrideredirect(False)
+
 getcurrsong()
 getoutputs()
 if abp == '1':
     if buttonvar == 'play':
         browserplayer()
 logger.info("Down at the bottom. Firstrun: {}".format(firstrun))
+
 window.mainloop()  # Run the (not defined with 'def') main window loop.
 
