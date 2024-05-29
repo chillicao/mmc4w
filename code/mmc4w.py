@@ -35,7 +35,7 @@ else:
     ctypes.windll.shcore.SetProcessDpiAwareness(0)
     ctypes.windll.user32.SetProcessDPIAware()
 
-version = "v2.1.0-chc"
+version = "v2.1.0-chcmod-0.1"
 # v2.1.0 - Gently handle attempting to run with no server. Add 'delete debug log'.
 # v2.0.9 - Finally get scale factors working. Renamed menus. Browse help.html.
 # v2.0.8 - Use buttons in search windows for added flexibility.
@@ -811,7 +811,7 @@ def getcurrsong():
                 gendtime = time.time() + (float(dur)-float(elap))
                 gsent = 0
                 if 'duration' not in cs:
-                    cs['duration'] = 0.00
+                    cs['duration'] = "0.0"
                     logger.info("5) gendtime returned to {}. Remaining is {}.".format(gendtime,(float(cs['duration'])-float(elap))))
                 #if float(cs['duration']) == 0.00: // disabled for now, mpd should progress to the next track, not this client. "minimaly invasive"
                 #    next()
@@ -1687,16 +1687,14 @@ def aboutWindow():
     aw.rowconfigure(0, weight=0)
     aw.rowconfigure(1, weight=0)
     aw.rowconfigure(2, weight=0)
-    awlabel = tk.Label(aw, bg="white", font=18, text ="Putting the Music First")
+    awlabel = tk.Label(aw, bg="white", font=18, text ="Putting the Music _First_")
     awlabel.grid(column=0, row=1, sticky="n")  # Place label in grid
     aboutText = tk.Text(aw, height=int(float(20)*(sfy/.056)), width=170, bd=3, padx=10, pady=10, wrap=tk.WORD, font=nnFont)
     # aboutText = tk.Text(aw, bd=3, padx=10, pady=10, wrap=tk.WORD, font=nnFont)
     aboutText.grid(column=0, row=2, sticky="s")
     aboutText.tag_configure("center", justify='center')
     aboutText.insert( tk.INSERT, "\n\nMMC4W is installed on a "+ sys.platform + " computer at:\n\n" + str(path_to_dat) + "\n"
-                     "\nMMC4W is a minimally invasive client for MPD.  It does nothing by itself, but if you have one or more MPD servers "
-                     "on your network, you might like this.\n\nThis little app holds forth the smallest possible GUI hiding a "
-                     "full set of MPD control functions. It may be homely, but it is mighty.\n\nJust play the music and stay out of my face."
+                     "\nMMC4W is a minimal client for MPD."
                      "\n\nCopyright 2023-2024 Gregory A. Sanders\nhttps://www.drgerg.com", "center")
 #
 ## DEFINE THE HELP WINDOW
