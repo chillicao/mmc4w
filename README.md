@@ -1,4 +1,4 @@
-# MMC4W - Minimal MPD Client for Windows 
+# MMC4W-chcmod - Minimal MPD Client for Windows 
 
 This fork is to maybe re-purpose this to focus on the music regardless of the format, metadata tags and availability of current song data such as elapsed and duration.
 
@@ -6,8 +6,7 @@ some todos:
 - remove blocking mpd queries and even the ability to be smart with elapsed vs duration, or change it to polling
 - creator said 'mpc idle' was not yet available when this was made, perhaps upgrade the thread to use idling for OPT-IN blocking calls
 - make artwork related cruft optional
-- re-do buttons
-- remove unecessary buttons, menu options
+- revisit unecessary buttons, menu options
 
 -----
 
