@@ -4,11 +4,11 @@ This fork is to maybe re-purpose this to focus on the music, regardless of the s
 To make it one of the "things that work" for every mpd fan, beyond [this](https://github.com/drgerg/mmc4w/blob/main/is_mmc4w_for_you.md) piece of information, which definitely is a lot bigger than the 5 if statements my latest commits contain to make the program work. Gratitude goes to drgreg for sharing this personal project.
 
 some todos:
-- make it not crash and ruin the music experience if mpd happens to have even 1 file missing 'track' or 'title' tags..
-- remove blocking mpd queries and even the ability to be smart with elapsed vs duration, or change it to polling or OPT-INs
-- make artwork related cruft optional
-- revisit unecessary buttons, menu options
-- custom title bar, move info strings there
+- make it not crash and ruin the music experience if mpd happens to have even 1 file missing 'track' or 'title' tags..;
+- remove blocking mpd queries and even the ability to be smart with elapsed vs duration, or change it to polling or OPT-INs;
+- make artwork related cruft optional, embedded in main window;
+- revisit unecessary buttons, menu options;
+- custom title bar, move info strings there.
 
 
 -----
