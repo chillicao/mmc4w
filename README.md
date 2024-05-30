@@ -3,6 +3,7 @@
 This fork is to maybe re-purpose this to focus on the music regardless of the format, metadata tags and availability of current song data such as elapsed and duration.
 
 some todos:
+- make it not crash and ruin the music experience if mpd happens to have even 1 file missing 'track' or 'title' tags..
 - remove blocking mpd queries and even the ability to be smart with elapsed vs duration, or change it to polling or OPT-INs
 - make artwork related cruft optional
 - revisit unecessary buttons, menu options
