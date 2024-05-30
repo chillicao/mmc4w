@@ -1,6 +1,7 @@
 # MMC4W-chcmod - Minimal MPD Client for Windows 
 
-This fork is to maybe re-purpose this to focus on the music regardless of the format, metadata tags and availability of current song data such as elapsed and duration.
+This fork is to maybe re-purpose this to focus on the music, regardless of the source, format, metadata tags and availability of current song data such as elapsed and duration.
+To make it one of the "things that work" for every mpd fan and beyond [this](https://github.com/drgerg/mmc4w/blob/main/is_mmc4w_for_you.md). 
 
 some todos:
 - make it not crash and ruin the music experience if mpd happens to have even 1 file missing 'track' or 'title' tags..
@@ -9,10 +10,10 @@ some todos:
 - revisit unecessary buttons, menu options
 - custom title bar, move info strings there
 
+
 -----
 
-Is MMC4W for you? [Check this](https://github.com/drgerg/mmc4w/blob/main/is_mmc4w_for_you.md).  
-You really should start here.  It's the [Help text](https://github.com/drgerg/mmc4w/blob/main/code/_internal/mmc4w_help.md).
+[Help text](https://github.com/drgerg/mmc4w/blob/main/code/_internal/mmc4w_help.md).
 
 ## It Really is All About the Music.
 
