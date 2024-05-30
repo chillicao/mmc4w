@@ -11,6 +11,7 @@ some todos:
 
 -----
 
+Is MMC4W for you? [Check this](https://github.com/drgerg/mmc4w/blob/main/is_mmc4w_for_you.md).  
 You really should start here.  It's the [Help text](https://github.com/drgerg/mmc4w/blob/main/code/_internal/mmc4w_help.md).
 
 ## It Really is All About the Music.
